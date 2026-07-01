@@ -1,8 +1,0 @@
-# Deploy de Atlas (Next.js 15) en Netlify.
-# Base directory en Netlify: web  (si el repo tiene la carpeta apps/ con web/ adentro)
-
-[build]
-  command = "npm run build"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
