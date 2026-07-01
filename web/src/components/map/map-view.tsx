@@ -11,6 +11,8 @@ import type { ProvinceFeatureProperties } from "@/lib/types/domain";
 
 import {
   FILL_LAYER_ID,
+  PROVINCE_PANEL_PADDING,
+  PROVINCE_SELECT_ZOOM,
   SOURCE_ID,
   STYLE_URL,
   addProvinceLayers,
@@ -48,6 +50,7 @@ export function MapView() {
   const mapRef = useRef<MapLibreMap | null>(null);
   const prevHoverRef = useRef<string | null>(null);
   const prevSelectedRef = useRef<string | null>(null);
+  const prevCameraProvinceRef = useRef<string | null>(null);
 
   const [styleEpoch, setStyleEpoch] = useState(0);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
@@ -187,29 +190,46 @@ export function MapView() {
     prevSelectedRef.current = selectedProvinceId;
   }, [selectedProvinceId, styleEpoch]);
 
-  // Movimiento de cámara: solo cuando cambia la selección (no al cambiar tema).
+  // Movimiento de cámara: solo cuando cambia la selección.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || styleEpoch === 0) return;
+
     if (selectedProvinceId) {
       const c = centroidById.get(selectedProvinceId);
-      if (c) {
-        map.flyTo({
-          center: [c.lon, c.lat],
-          zoom: Math.max(map.getZoom(), 5),
-          duration: 900,
-          essential: true,
-          padding: { left: 0, right: 380, top: 0, bottom: 0 },
-        });
+      if (!c) return;
+
+      const targetZoom = Math.max(map.getZoom(), PROVINCE_SELECT_ZOOM);
+      const camera = {
+        center: [c.lon, c.lat] as [number, number],
+        zoom: targetZoom,
+        padding: PROVINCE_PANEL_PADDING,
+        essential: true as const,
+      };
+
+      // Entre provincias ya enfocadas: solo desplazar (easeTo) sin re-animar zoom.
+      const switchingProvince =
+        prevCameraProvinceRef.current !== null &&
+        prevCameraProvinceRef.current !== selectedProvinceId &&
+        map.getZoom() >= PROVINCE_SELECT_ZOOM;
+
+      if (switchingProvince) {
+        map.easeTo({ ...camera, duration: 650 });
+      } else {
+        map.flyTo({ ...camera, duration: 900 });
       }
-    } else if (country) {
+
+      prevCameraProvinceRef.current = selectedProvinceId;
+      return;
+    }
+
+    prevCameraProvinceRef.current = null;
+    if (country) {
       map.fitBounds(country.bbox, {
         padding: { top: 100, bottom: 80, left: 80, right: 80 },
         duration: 700,
       });
     }
-    // Intencionalmente no depende de styleEpoch para no mover la cámara al
-    // cambiar de tema.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProvinceId, centroidById, country]);
 

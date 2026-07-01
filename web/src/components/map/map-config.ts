@@ -13,6 +13,15 @@ export const SOURCE_ID = "provinces";
 export const FILL_LAYER_ID = "province-fill";
 export const OUTLINE_LAYER_ID = "province-outline";
 
+/**
+ * Zoom mínimo al enfocar una provincia. Por debajo de ~5.5 el basemap CARTO puede
+ * recargar etiquetas al panear; por encima de ~6.5 el encuadre queda muy cerrado.
+ */
+export const PROVINCE_SELECT_ZOOM = 5.8;
+
+/** Padding lateral para dejar espacio al panel de provincia (px). */
+export const PROVINCE_PANEL_PADDING = { left: 0, right: 380, top: 0, bottom: 0 };
+
 const COLORS = {
   primary: "#5b8def",
   accent: "#22d3ee",
