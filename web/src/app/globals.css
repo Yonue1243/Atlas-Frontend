@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/*
+  Sistema de diseño de Atlas (dark mode).
+  Los tokens se exponen como variables CSS y se mapean a utilidades Tailwind v4.
+*/
+
+:root {
+  --background: #0a0c10;
+  --surface: #0f1319;
+  --card: #12161d;
+  --card-elevated: #161b23;
+  --foreground: #e7ecf3;
+  --muted: #171c24;
+  --muted-foreground: #8b95a6;
+  --border: #212834;
+  --border-strong: #2b3543;
+  --primary: #5b8def;
+  --primary-foreground: #ffffff;
+  --accent: #22d3ee;
+  --ring: #5b8def;
+  --danger: #f87171;
+  --shadow-color: 220 40% 2%;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-elevated: var(--card-elevated);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-ring: var(--ring);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Glassmorphism ligero reutilizable */
+.glass {
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid color-mix(in srgb, var(--border-strong) 70%, transparent);
+}
+
+.glass-strong {
+  background: color-mix(in srgb, var(--card-elevated) 88%, transparent);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid color-mix(in srgb, var(--border-strong) 80%, transparent);
+}
+
+/* Scrollbar sutil */
+.scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.scroll-area::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+.scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Overrides de MapLibre para integrarlo al tema */
+.maplibregl-ctrl-group {
+  background: color-mix(in srgb, var(--card-elevated) 90%, transparent) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -12px hsl(var(--shadow-color) / 0.8) !important;
+}
+.maplibregl-ctrl-group button {
+  background: transparent !important;
+  width: 34px !important;
+  height: 34px !important;
+}
+.maplibregl-ctrl-group button + button {
+  border-top: 1px solid var(--border) !important;
+}
+.maplibregl-ctrl-group button span {
+  filter: invert(0.85);
+}
+.maplibregl-ctrl-attrib {
+  background: color-mix(in srgb, var(--card) 70%, transparent) !important;
+  border-radius: 0.5rem 0 0 0 !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--muted-foreground) !important;
+}
+.maplibregl-canvas {
+  outline: none;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.4s ease both;
+}
