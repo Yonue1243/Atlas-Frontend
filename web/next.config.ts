@@ -1,9 +1,14 @@
+import { existsSync } from "fs";
 import path from "path";
 import type { NextConfig } from "next";
 
+const monorepoRoot = path.join(__dirname, "../..");
+
 const nextConfig: NextConfig = {
-  // El proyecto vive en un monorepo; fija la raíz para el tracing de archivos.
-  outputFileTracingRoot: path.join(__dirname, "../.."),
+  // Solo en monorepo local (pnpm-workspace en la raíz). En Netlify (repo solo web) no aplica.
+  ...(existsSync(path.join(monorepoRoot, "pnpm-workspace.yaml"))
+    ? { outputFileTracingRoot: monorepoRoot }
+    : {}),
 };
 
 export default nextConfig;
