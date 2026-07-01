@@ -5,8 +5,14 @@
  * API. La URL base se configura con NEXT_PUBLIC_API_URL (default: localhost).
  */
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+/** Normaliza la URL base (sin barra final) para evitar `//path` al concatenar. */
+function normalizeBaseUrl(url: string): string {
+  return url.replace(/\/+$/, "");
+}
+
+export const API_BASE_URL = normalizeBaseUrl(
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
+);
 
 export class ApiError extends Error {
   constructor(
