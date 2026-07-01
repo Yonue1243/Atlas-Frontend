@@ -1,9 +1,9 @@
-# Repo con estructura: web/ (Next.js). Base apunta a web/; no definir publish
-# (lo gestiona @netlify/plugin-nextjs).
+# Repo: web/ (Next.js). publish debe ser distinto de base (requerido por Netlify).
 
 [build]
   base = "web"
   command = "npm run build"
+  publish = ".next"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
