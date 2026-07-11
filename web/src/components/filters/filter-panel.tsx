@@ -5,11 +5,11 @@ import { Check, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { useAppState } from "@/components/providers/app-state";
-import { ResourceIcon } from "@/components/resource-icon";
+import { ResourceRow } from "@/components/resources/resource-badge";
 import { Button } from "@/components/ui/button";
 import { useCategories, useResources } from "@/lib/query/hooks";
 import type { Resource } from "@/lib/types/domain";
-import { cn } from "@/lib/utils";
+import { cn, resourceDisplayColor } from "@/lib/utils";
 
 /** Panel de filtros: resalta en el mapa las provincias con los recursos activos. */
 export function FilterPanel() {
@@ -128,31 +128,23 @@ function ResourceToggle({
   onToggle: () => void;
 }) {
   return (
-    <button
-      type="button"
+    <ResourceRow
+      resource={resource}
+      active={active}
       onClick={onToggle}
-      className={cn(
-        "flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left text-sm transition-colors",
-        active ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-      )}
-    >
-      <span
-        className="grid h-6 w-6 shrink-0 place-items-center rounded-lg"
-        style={{ backgroundColor: `${resource.color}1f`, color: resource.color }}
-      >
-        <ResourceIcon name={resource.icon} className="h-3.5 w-3.5" />
-      </span>
-      <span className="flex-1 truncate">{resource.name}</span>
-      <span
-        className={cn(
-          "grid h-4 w-4 shrink-0 place-items-center rounded-md border transition-colors",
-          active
-            ? "border-primary bg-primary text-primary-foreground"
-            : "border-border-strong",
-        )}
-      >
-        {active && <Check className="h-3 w-3" />}
-      </span>
-    </button>
+      trailing={
+        <span
+          className={cn(
+            "grid h-4 w-4 shrink-0 place-items-center rounded border transition-all duration-150",
+            active
+              ? "border-transparent text-white"
+              : "border-border-strong bg-transparent",
+          )}
+          style={active ? { backgroundColor: resourceDisplayColor(resource.color) } : undefined}
+        >
+          {active && <Check className="h-2.5 w-2.5" strokeWidth={3} />}
+        </span>
+      }
+    />
   );
 }

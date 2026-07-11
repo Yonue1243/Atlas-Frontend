@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MapPin, Search, X } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
-import { ResourceIcon } from "@/components/resource-icon";
+import { ResourceRow } from "@/components/resources/resource-badge";
 import { useAppState } from "@/components/providers/app-state";
 import { Input } from "@/components/ui/input";
 import { useProvinces, useResources } from "@/lib/query/hooks";
@@ -129,27 +129,26 @@ export function SearchBox() {
                 {resourceMatches.map((r) => {
                   const active = activeResourceIds.has(r.id);
                   return (
-                    <ResultRow
+                    <div
                       key={r.id}
                       onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => onSelectResource(r.id)}
                     >
-                      <span
-                        className="grid h-5 w-5 place-items-center rounded-md"
-                        style={{ backgroundColor: `${r.color}22`, color: r.color }}
-                      >
-                        <ResourceIcon name={r.icon} className="h-3.5 w-3.5" />
-                      </span>
-                      <span className="flex-1 truncate">{r.name}</span>
-                      <span
-                        className={cn(
-                          "text-xs",
-                          active ? "text-primary" : "text-muted-foreground",
-                        )}
-                      >
-                        {active ? "Activo" : "Filtrar"}
-                      </span>
-                    </ResultRow>
+                      <ResourceRow
+                        resource={r}
+                        active={active}
+                        onClick={() => onSelectResource(r.id)}
+                        trailing={
+                          <span
+                            className={cn(
+                              "text-xs",
+                              active ? "text-primary" : "text-muted-foreground",
+                            )}
+                          >
+                            {active ? "Activo" : "Filtrar"}
+                          </span>
+                        }
+                      />
+                    </div>
                   );
                 })}
               </Section>

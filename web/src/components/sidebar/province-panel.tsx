@@ -5,7 +5,7 @@ import { Layers, Ruler, Users, X } from "lucide-react";
 import { useMemo } from "react";
 
 import { useAppState } from "@/components/providers/app-state";
-import { ResourceIcon } from "@/components/resource-icon";
+import { ResourceBadge } from "@/components/resources/resource-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -153,23 +153,12 @@ function ResourceGroup({
 }) {
   return (
     <div>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         {category.name}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {items.map((resource) => (
-          <span
-            key={resource.id}
-            className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium"
-            style={{
-              backgroundColor: `${resource.color}18`,
-              borderColor: `${resource.color}40`,
-              color: resource.color,
-            }}
-          >
-            <ResourceIcon name={resource.icon} className="h-3.5 w-3.5" />
-            {resource.name}
-          </span>
+          <ResourceBadge key={resource.id} resource={resource} size="sm" />
         ))}
       </div>
     </div>
