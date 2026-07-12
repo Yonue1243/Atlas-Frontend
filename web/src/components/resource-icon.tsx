@@ -48,10 +48,11 @@ const iconMap: Record<string, LucideIcon> = {
 interface ResourceIconProps {
   name: string;
   className?: string;
+  strokeWidth?: number;
 }
 
 /** Renderiza el ícono de un recurso, con un fallback seguro. */
-export function ResourceIcon({ name, className }: ResourceIconProps) {
+export function ResourceIcon({ name, className, strokeWidth }: ResourceIconProps) {
   const Icon = iconMap[name] ?? Circle;
-  return <Icon className={className} aria-hidden />;
+  return <Icon className={className} strokeWidth={strokeWidth} aria-hidden />;
 }

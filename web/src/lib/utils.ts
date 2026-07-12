@@ -37,18 +37,87 @@ function relativeLuminance(r: number, g: number, b: number): number {
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
 
-/** Aclara colores muy oscuros para que los iconos se lean bien en dark mode. */
+function rgbToHsl(
+  r: number,
+  g: number,
+  b: number,
+): { h: number; s: number; l: number } {
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const delta = max - min;
+  let h = 0;
+
+  if (delta !== 0) {
+    if (max === rn) h = ((gn - bn) / delta) % 6;
+    else if (max === gn) h = (bn - rn) / delta + 2;
+    else h = (rn - gn) / delta + 4;
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+
+  const l = (max + min) / 2;
+  const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+  return { h, s, l };
+}
+
+function hslToRgb(
+  h: number,
+  s: number,
+  l: number,
+): { r: number; g: number; b: number } {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let rp = 0;
+  let gp = 0;
+  let bp = 0;
+
+  if (h < 60) [rp, gp, bp] = [c, x, 0];
+  else if (h < 120) [rp, gp, bp] = [x, c, 0];
+  else if (h < 180) [rp, gp, bp] = [0, c, x];
+  else if (h < 240) [rp, gp, bp] = [0, x, c];
+  else if (h < 300) [rp, gp, bp] = [x, 0, c];
+  else [rp, gp, bp] = [c, 0, x];
+
+  return {
+    r: Math.round((rp + m) * 255),
+    g: Math.round((gp + m) * 255),
+    b: Math.round((bp + m) * 255),
+  };
+}
+
+function toHex({ r, g, b }: { r: number; g: number; b: number }): string {
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+/** Ajusta colores para dark mode: aclara tonos oscuros y sube saturación en grises. */
 export function resourceDisplayColor(hex: string, minLuminance = 0.28): string {
   const rgb = hexToRgb(hex);
   if (!rgb) return hex;
 
-  const { r, g, b } = rgb;
-  if (relativeLuminance(r, g, b) >= minLuminance) return hex;
+  const { h, s: rawS, l: rawL } = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  let s = rawS;
+  let l = rawL;
 
-  const mix = 0.62;
-  const nr = Math.round(r + (255 - r) * mix);
-  const ng = Math.round(g + (255 - g) * mix);
-  const nb = Math.round(b + (255 - b) * mix);
+  if (s < 0.22) s = Math.min(0.5, s + 0.22);
+  if (l < 0.32) l = 0.32 + l * 0.25;
+  if (l > 0.82) {
+    s = Math.max(s, 0.38);
+    l = 0.68;
+  }
 
-  return `#${nr.toString(16).padStart(2, "0")}${ng.toString(16).padStart(2, "0")}${nb.toString(16).padStart(2, "0")}`;
+  const adjusted = hslToRgb(h, s, l);
+  if (relativeLuminance(adjusted.r, adjusted.g, adjusted.b) >= minLuminance) {
+    return toHex(adjusted);
+  }
+
+  const mix = 0.45;
+  return toHex({
+    r: Math.round(adjusted.r + (255 - adjusted.r) * mix),
+    g: Math.round(adjusted.g + (255 - adjusted.g) * mix),
+    b: Math.round(adjusted.b + (255 - adjusted.b) * mix),
+  });
 }

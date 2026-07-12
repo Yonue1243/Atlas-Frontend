@@ -11,6 +11,16 @@ import { useCategories, useResources } from "@/lib/query/hooks";
 import type { Resource } from "@/lib/types/domain";
 import { cn, resourceDisplayColor } from "@/lib/utils";
 
+const CATEGORY_ACCENTS: Record<string, string> = {
+  "metales-preciosos": "#F5B301",
+  "metales-industriales": "#8B5CF6",
+  "minerales-industriales": "#2DD4BF",
+  rocas: "#D4A96A",
+  "combustibles-fosiles": "#EAB308",
+  "recursos-energeticos": "#FB923C",
+  "recursos-hidricos": "#38BDF8",
+};
+
 /** Panel de filtros: resalta en el mapa las provincias con los recursos activos. */
 export function FilterPanel() {
   const { activeResourceIds, toggleResource, clearResources } = useAppState();
@@ -94,9 +104,18 @@ export function FilterPanel() {
               <div className="space-y-4">
                 {grouped.map(({ category, items }) => (
                   <div key={category.id}>
-                    <p className="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      {category.name}
-                    </p>
+                    <div className="mb-1.5 flex items-center gap-2 px-1">
+                      <span
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{
+                          backgroundColor:
+                            CATEGORY_ACCENTS[category.id] ?? "#5b8def",
+                        }}
+                      />
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {category.name}
+                      </p>
+                    </div>
                     <div className="space-y-0.5">
                       {items.map((resource) => (
                         <ResourceToggle

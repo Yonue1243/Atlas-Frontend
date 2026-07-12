@@ -12,7 +12,7 @@ interface ResourceIconMarkProps {
   className?: string;
 }
 
-/** Contenedor de icono con tinte sutil del color del recurso. */
+/** Contenedor de icono con tinte del color del recurso. */
 export function ResourceIconMark({
   resource,
   size = "md",
@@ -28,14 +28,15 @@ export function ResourceIconMark({
         className,
       )}
       style={{
-        backgroundColor: `${color}18`,
+        background: `linear-gradient(145deg, ${color}30 0%, ${color}12 100%)`,
         color,
-        borderColor: `${color}35`,
+        borderColor: `${color}45`,
       }}
     >
       <ResourceIcon
         name={resource.icon}
         className={size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4"}
+        strokeWidth={2.25}
       />
     </span>
   );
@@ -79,15 +80,17 @@ export function ResourceBadge({
       style={
         active
           ? {
-              borderColor: `${color}40`,
-              background: `linear-gradient(135deg, ${color}14 0%, transparent 70%)`,
+              borderColor: `${color}50`,
+              background: `linear-gradient(135deg, ${color}1a 0%, transparent 75%)`,
             }
-          : undefined
+          : {
+              borderColor: `${color}18`,
+            }
       }
     >
       <span
         className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full"
-        style={{ backgroundColor: color, opacity: active ? 1 : 0.55 }}
+        style={{ backgroundColor: color }}
         aria-hidden
       />
 
@@ -101,7 +104,6 @@ export function ResourceBadge({
         className={cn(
           "min-w-0 flex-1 truncate font-medium leading-tight",
           size === "sm" ? "text-xs" : "text-sm",
-          active ? "text-foreground" : "text-foreground/85",
         )}
       >
         {resource.name}
@@ -146,18 +148,16 @@ export function ResourceRow({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition-colors duration-150",
+        "relative flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition-colors duration-150",
         active
-          ? "bg-muted text-foreground"
-          : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+          ? "bg-muted/90 text-foreground"
+          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
       )}
-      style={
-        active
-          ? {
-              boxShadow: `inset 3px 0 0 ${color}`,
-            }
-          : undefined
-      }
+      style={{
+        boxShadow: active
+          ? `inset 3px 0 0 ${color}`
+          : `inset 2px 0 0 ${color}55`,
+      }}
     >
       <ResourceIconMark resource={resource} size="sm" />
       <span className="flex-1 truncate text-sm font-medium">{resource.name}</span>

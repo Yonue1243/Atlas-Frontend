@@ -151,11 +151,28 @@ function ResourceGroup({
   category: Category;
   items: Resource[];
 }) {
+  const accent =
+    {
+      "metales-preciosos": "#F5B301",
+      "metales-industriales": "#8B5CF6",
+      "minerales-industriales": "#2DD4BF",
+      rocas: "#D4A96A",
+      "combustibles-fosiles": "#EAB308",
+      "recursos-energeticos": "#FB923C",
+      "recursos-hidricos": "#38BDF8",
+    }[category.id] ?? "#5b8def";
+
   return (
     <div>
-      <p className="mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {category.name}
-      </p>
+      <div className="mb-2 flex items-center gap-2 px-0.5">
+        <span
+          className="h-1.5 w-1.5 rounded-full"
+          style={{ backgroundColor: accent }}
+        />
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {category.name}
+        </p>
+      </div>
       <div className="grid grid-cols-2 gap-2">
         {items.map((resource) => (
           <ResourceBadge key={resource.id} resource={resource} size="sm" />
